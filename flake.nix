@@ -50,15 +50,15 @@
                 init_pg = pkgs.writeScriptBin "init_pg" ''
 
                     # Stores a few frequently referenced directories
-                    wd=$(pwd)
-                    db_dir="$wd/pgsql"
+                    #wd=$(pwd)
+                    db_dir="./pgsql"
                     db_data="$db_dir/data"
                     db_log="$db_dir/log"
 
                     # 0. Checks that ./pgsql doesn't already exist
                     if [ ! -d $db_dir ]
                     then
-                        echo "Database files will be stored at \'$db_dir\'"
+                        echo "Database files will be stored at '$db_dir'"
                     else
                         if [ -d $db_data ]
                         then
@@ -87,7 +87,7 @@
                     fi
 
                     # 1. Tries to initialize a database cluster at db_data
-                    if pg_ctl -D $db_data -o "-E " initdb 
+                    if pg_ctl -D $db_data -o "-E 'UTF-8'" initdb 
                     then 
                         echo "Database cluster succesfully initialized at '$db_data'"
                     else
@@ -98,15 +98,16 @@
                     # Create the necessary `sed` arguments 
                     # Used to update where PostgreSQL will listen for connections
                     find="#unix_socket_directories = '/run/postgresql'	# comma-separated list of directories"
-                    replace="unix_socket_directories = \'$db_dir\'	# set to listen at ../"
+                    replace="unix_socket_directories = \'../\'	# set to listen at ../"
 
-                    # 2.1 Tries to update postgresql.conf ( found in db_data )
+                    # 2. Tries to update postgresql.conf ( found in db_data )
                     if sed -i "s:$find:$replace:" $db_data/postgresql.conf && 
-                    [ $(grep -c "unix_socket_directories = '$db_dir'	# set to listen at ../" $db_data/postgresql.conf) == "1" ]
+                    [ $(grep -c "unix_socket_directories = '../'	# set to listen at ../" $db_data/postgresql.conf) == "1" ]
                     then
                         echo "Database sockets configured succesfully!"
                     else
                         echo "Failed to configure 'unix_socket_directories' in '$db_data/postgresql.conf'!"
+                        exit "1"
                     fi
 
                     # 3. Tries to start the database server, piping logs to db_log
@@ -119,7 +120,7 @@
                     fi
 
                     # 4. Tries to create RogetWebDB
-                    if createdb RogetWebDB -h "$db_dir"
+                    if createdb RogetWebDB -h "$(pwd)/pgsql"
                     then
                         echo "RogetWebDB succesfully created!"
                     else
@@ -151,10 +152,8 @@
                 # Tries to start the PostgreSQL server
                 start_pg = pkgs.writeScriptBin "start_pg" ''
 
-                    wd=$(pwd)
-
                     # Tries to start the database server, piping logs to './pgsql/log'
-                    if pg_ctl -D $wd/pgsql/data -l $wd/pgsql/log  start
+                    if pg_ctl -D ./pgsql/data -l ./pgsql/log  start
                     then
                         echo "Database server succesfully started!"
                     else
@@ -171,9 +170,9 @@
 
                     wd=$(pwd)
 
-                    if [ ! 'pg_ctl: no server running' = "$(pg_ctl -D $wd/pgsql/data status)" ]
+                    if [ ! 'pg_ctl: no server running' = "$(pg_ctl -D ./pgsql/data status)" ]
                     then 
-                        if pg_ctl -D $wd/pgsql/data stop
+                        if pg_ctl -D ./pgsql/data stop
                         then
                             echo "Database server has been succesfully shutdown."
                         else
@@ -202,8 +201,8 @@
                 wipe_pg = pkgs.writeScriptBin "wipe_pg" ''
 
                     # Stores a few frequently referenced directories
-                    wd=$(pwd)
-                    db_dir="$wd/pgsql"
+                    #wd=$(pwd)
+                    db_dir="./pgsql"
                     db_data="$db_dir/data"
                     db_log="$db_dir/log"
 
