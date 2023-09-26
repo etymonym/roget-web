@@ -13,18 +13,17 @@
         "type": "github"
       },
       "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
+        "id": "flake-utils",
+        "type": "indirect"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1695606899,
-        "narHash": "sha256-jaSe7yZuUusVQ9HeH5uqeEqvlamHAoUVCbWtB3p3jSk=",
+        "lastModified": 1695724580,
+        "narHash": "sha256-uf+NmRJeeYVmIbYKEJa5F/Nk5ESoTXB+nBX1Tr5ZKrg=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "94a42157f48abfe2c27b1afadd3bf8f94334f08d",
+        "rev": "4b1e71380f797d66add9af0a5fb4908387697f31",
         "type": "github"
       },
       "original": {

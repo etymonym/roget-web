@@ -1,3 +1,9 @@
+# PostgreSQL Ignores
+pgsql/
+pgsql_log
+
+# Relevant Python + Django Ignores ( sourced from: https://github.com/github/gitignore/blob/main/Python.gitignore )
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -28,3 +34,4 @@ MANIFEST
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+
